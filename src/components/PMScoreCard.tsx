@@ -19,7 +19,7 @@ export default function PMScoreCard({ pm, scores, comments, onScore, onComment, 
       }`}
     >
       {/* Card header */}
-      <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div className={`px-5 py-4 border-b flex items-center justify-between ${isDuplicate ? 'border-amber-100' : 'border-gray-100'}`}>
         <div>
           <div className="font-semibold text-gray-900">{pm.name}</div>
           <div className="text-xs text-gray-400 mt-0.5">
@@ -49,12 +49,12 @@ export default function PMScoreCard({ pm, scores, comments, onScore, onComment, 
                 {area.definition}
               </div>
               <ScoreButtons
-                value={scores[`score_${area.id}` as ScoreField] ?? null}
+                value={scores[`score_${area.id}`] ?? null}
                 onChange={score => onScore(pm.id, area.id, score)}
               />
               <textarea
                 placeholder="Optional comment..."
-                value={comments[`comment_${area.id}` as CommentField] ?? ''}
+                value={comments[`comment_${area.id}`] ?? ''}
                 onChange={e => onComment(pm.id, area.id, e.target.value)}
                 rows={2}
                 className="mt-2.5 w-full text-xs rounded-xl border border-gray-200 px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-black/10 placeholder:text-gray-400"
