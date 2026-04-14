@@ -26,11 +26,13 @@ export default function SurveyPage() {
   // Load PMs when division changes
   useEffect(() => {
     if (!division) return
+    let cancelled = false
     const query = supabase.from('pms').select('*').eq('active', true)
     if (division !== 'ALL') query.eq('division', division)
     query.order('name').then(({ data }) => {
-      if (data) setPms(data as PM[])
+      if (!cancelled && data) setPms(data as PM[])
     })
+    return () => { cancelled = true }
   }, [division])
 
   // Check for duplicates when assessor name or PM list changes
@@ -39,6 +41,7 @@ export default function SurveyPage() {
       setDuplicates(new Set())
       return
     }
+    let cancelled = false
     const pmIds = pms.map(p => p.id)
     supabase
       .from('submissions')
@@ -46,8 +49,9 @@ export default function SurveyPage() {
       .eq('assessor_name', assessorName.trim())
       .in('pm_id', pmIds)
       .then(({ data }) => {
-        if (data) setDuplicates(new Set(data.map((r: { pm_id: string }) => r.pm_id)))
+        if (!cancelled && data) setDuplicates(new Set(data.map((r: { pm_id: string }) => r.pm_id)))
       })
+    return () => { cancelled = true }
   }, [assessorName, pms])
 
   const handleScore = useCallback((pmId: string, area: AreaId, score: number) => {
@@ -100,6 +104,7 @@ export default function SurveyPage() {
       setSubmitting(false)
       return
     }
+    setSubmitting(false)
     setSubmitted(true)
   }
 
