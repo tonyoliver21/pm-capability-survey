@@ -4,9 +4,10 @@ import type { PM, Submission, PMWithSubmissions, Division } from '../types'
 import { aggregateAverage, toPercent } from '../utils/scores'
 import Header from '../components/Header'
 import PMRankingTable from '../components/admin/PMRankingTable'
+import PMManagement from '../components/admin/PMManagement'
 
 export default function AdminPage() {
-  const [pms, setPms] = useState<PM[]>([])
+  const [allPms, setAllPms] = useState<PM[]>([])
   const [submissions, setSubmissions] = useState<Submission[]>([])
   const [divisionFilter, setDivisionFilter] = useState<Division>('ALL')
   const [selectedPmId, setSelectedPmId] = useState<string | null>(null)
@@ -15,21 +16,23 @@ export default function AdminPage() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from('pms').select('*').eq('active', true).order('name'),
+      supabase.from('pms').select('*').order('name'),
       supabase.from('submissions').select('*'),
     ]).then(([{ data: pmsData, error: pmsErr }, { data: subsData, error: subsErr }]) => {
       if (pmsErr || subsErr) {
         setError('Failed to load data. Please refresh.')
       } else {
-        if (pmsData) setPms(pmsData as PM[])
+        if (pmsData) setAllPms(pmsData as PM[])
         if (subsData) setSubmissions(subsData as Submission[])
       }
       setLoading(false)
     })
   }, [])
 
+  const activePms = useMemo(() => allPms.filter(pm => pm.active), [allPms])
+
   const pmsWithData: PMWithSubmissions[] = useMemo(() => {
-    return pms
+    return activePms
       .filter(pm => divisionFilter === 'ALL' || pm.division === divisionFilter)
       .map(pm => {
         const pmSubs = submissions.filter(s => s.pm_id === pm.id)
@@ -37,7 +40,7 @@ export default function AdminPage() {
         return { ...pm, submissions: pmSubs, avgTotal, percent: toPercent(avgTotal) }
       })
       .sort((a, b) => b.avgTotal - a.avgTotal)
-  }, [pms, submissions, divisionFilter])
+  }, [activePms, submissions, divisionFilter])
 
   const filteredSubmissionCount = pmsWithData.reduce((sum, pm) => sum + pm.submissions.length, 0)
 
@@ -98,6 +101,7 @@ export default function AdminPage() {
           selectedPmId={selectedPmId}
           onSelect={id => setSelectedPmId(prev => (prev === id ? null : id))}
         />
+        <PMManagement allPms={allPms} onPmsChange={setAllPms} />
       </div>
     </div>
   )
