@@ -93,25 +93,47 @@ export default function PMDetail({ pm }: Props) {
               </tr>
             </thead>
             <tbody>
-              {pm.submissions.map(s => (
-                <tr key={s.id} className="border-b border-gray-50">
-                  <td className="py-2.5 pr-4 font-medium text-gray-700">{s.assessor_name}</td>
-                  <td className="py-2.5 pr-3">{s.score_competency}</td>
-                  <td className="py-2.5 pr-3">{s.score_knowledge}</td>
-                  <td className="py-2.5 pr-3">{s.score_client}</td>
-                  <td className="py-2.5 pr-3">{s.score_delivery}</td>
-                  <td className="py-2.5 pr-3">{s.score_risk}</td>
-                  <td className="py-2.5 pr-3 font-semibold text-gray-900">
-                    {submissionTotal(s)}/50
-                  </td>
-                  <td className="py-2.5 text-gray-400">
-                    {new Date(s.submitted_at).toLocaleDateString('en-GB', {
-                      day: 'numeric',
-                      month: 'short',
-                    })}
-                  </td>
-                </tr>
-              ))}
+              {pm.submissions.map(s => {
+                const commentPairs = AREAS.map(a => ({
+                  label: a.label,
+                  text: s[`comment_${a.id}` as keyof typeof s] as string | null,
+                })).filter(c => c.text)
+
+                return (
+                  <>
+                    <tr key={s.id} className={commentPairs.length ? 'border-b-0' : 'border-b border-gray-50'}>
+                      <td className="py-2.5 pr-4 font-medium text-gray-700">{s.assessor_name}</td>
+                      <td className="py-2.5 pr-3">{s.score_competency}</td>
+                      <td className="py-2.5 pr-3">{s.score_knowledge}</td>
+                      <td className="py-2.5 pr-3">{s.score_client}</td>
+                      <td className="py-2.5 pr-3">{s.score_delivery}</td>
+                      <td className="py-2.5 pr-3">{s.score_risk}</td>
+                      <td className="py-2.5 pr-3 font-semibold text-gray-900">
+                        {submissionTotal(s)}/50
+                      </td>
+                      <td className="py-2.5 text-gray-400">
+                        {new Date(s.submitted_at).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'short',
+                        })}
+                      </td>
+                    </tr>
+                    {commentPairs.length > 0 && (
+                      <tr key={`${s.id}-comments`} className="border-b border-gray-50">
+                        <td colSpan={8} className="pb-2.5 pr-4">
+                          <div className="flex flex-wrap gap-x-4 gap-y-1">
+                            {commentPairs.map(c => (
+                              <span key={c.label} className="text-gray-500">
+                                <span className="font-medium text-gray-600">{c.label}:</span> {c.text}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )
+              })}
             </tbody>
           </table>
         </div>
