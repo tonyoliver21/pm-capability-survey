@@ -7,7 +7,7 @@ import ScoreGuide from '../components/ScoreGuide'
 import PMScoreCard from '../components/PMScoreCard'
 import ThankYou from '../components/ThankYou'
 
-const AREA_IDS: AreaId[] = ['competency', 'knowledge', 'client', 'delivery', 'risk']
+const AREA_IDS: AreaId[] = ['competency', 'knowledge', 'client', 'delivery', 'risk', 'admin', 'leadership']
 
 type ScoreMap = Record<string, Partial<Record<ScoreField, number>>>
 type CommentMap = Record<string, Partial<Record<CommentField, string>>>
@@ -92,11 +92,15 @@ export default function SurveyPage() {
       score_client: scores[pm.id]!.score_client!,
       score_delivery: scores[pm.id]!.score_delivery!,
       score_risk: scores[pm.id]!.score_risk!,
+      score_admin: scores[pm.id]!.score_admin!,
+      score_leadership: scores[pm.id]!.score_leadership!,
       comment_competency: comments[pm.id]?.comment_competency ?? null,
       comment_knowledge: comments[pm.id]?.comment_knowledge ?? null,
       comment_client: comments[pm.id]?.comment_client ?? null,
       comment_delivery: comments[pm.id]?.comment_delivery ?? null,
       comment_risk: comments[pm.id]?.comment_risk ?? null,
+      comment_admin: comments[pm.id]?.comment_admin ?? null,
+      comment_leadership: comments[pm.id]?.comment_leadership ?? null,
     }))
 
     const { error: err } = await supabase.from('submissions').insert(rows)

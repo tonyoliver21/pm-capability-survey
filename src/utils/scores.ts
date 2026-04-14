@@ -30,11 +30,13 @@ export function submissionTotal(s: Submission): number {
     s.score_knowledge +
     s.score_client +
     s.score_delivery +
-    s.score_risk
+    s.score_risk +
+    s.score_admin +
+    s.score_leadership
   )
 }
 
-export function toPercent(total: number, max = 50): number {
+export function toPercent(total: number, max = 70): number {
   return Math.round((total / max) * 100)
 }
 

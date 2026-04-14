@@ -31,4 +31,16 @@ export const AREAS: Area[] = [
     definition:
       'Flags problems early, gives honest status updates, and comes with solutions not just issues.',
   },
+  {
+    id: 'admin',
+    label: 'Operational Rigour',
+    definition:
+      'Data, trackers, and project records are always current. Admin is done proactively, not chased.',
+  },
+  {
+    id: 'leadership',
+    label: 'Leadership Potential',
+    definition:
+      'Shows the instincts and behaviours of a future PM lead — steps up, supports the team, and takes ownership beyond their own projects.',
+  },
 ]

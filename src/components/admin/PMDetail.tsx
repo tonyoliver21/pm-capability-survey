@@ -17,7 +17,7 @@ export default function PMDetail({ pm }: Props) {
     return <p className="text-sm text-gray-400">No submissions yet for this PM.</p>
   }
 
-  const overallLabel = getScoreLabel(pm.avgTotal / 5)
+  const overallLabel = getScoreLabel(pm.avgTotal / 7)
 
   return (
     <div>
@@ -32,7 +32,7 @@ export default function PMDetail({ pm }: Props) {
         </div>
         <div className="text-right">
           <div className={`text-3xl font-black ${overallLabel.textColor}`}>{pm.percent}%</div>
-          <div className="text-xs text-gray-400">{pm.avgTotal}/50 avg</div>
+          <div className="text-xs text-gray-400">{pm.avgTotal}/70 avg</div>
         </div>
       </div>
 
@@ -103,13 +103,13 @@ export default function PMDetail({ pm }: Props) {
                   <>
                     <tr key={s.id} className={commentPairs.length ? 'border-b-0' : 'border-b border-gray-50'}>
                       <td className="py-2.5 pr-4 font-medium text-gray-700">{s.assessor_name}</td>
-                      <td className="py-2.5 pr-3">{s.score_competency}</td>
-                      <td className="py-2.5 pr-3">{s.score_knowledge}</td>
-                      <td className="py-2.5 pr-3">{s.score_client}</td>
-                      <td className="py-2.5 pr-3">{s.score_delivery}</td>
-                      <td className="py-2.5 pr-3">{s.score_risk}</td>
+                      {AREAS.map(a => (
+                        <td key={a.id} className="py-2.5 pr-3">
+                          {s[`score_${a.id}` as keyof typeof s] as number}
+                        </td>
+                      ))}
                       <td className="py-2.5 pr-3 font-semibold text-gray-900">
-                        {submissionTotal(s)}/50
+                        {submissionTotal(s)}/70
                       </td>
                       <td className="py-2.5 text-gray-400">
                         {new Date(s.submitted_at).toLocaleDateString('en-GB', {

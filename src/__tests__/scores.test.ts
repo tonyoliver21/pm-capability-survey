@@ -10,7 +10,7 @@ import {
 } from '../utils/scores'
 import type { Submission } from '../types'
 
-const makeSubmission = (scores: [number, number, number, number, number]): Submission => ({
+const makeSubmission = (scores: [number, number, number, number, number, number, number]): Submission => ({
   id: '1',
   pm_id: 'pm1',
   assessor_name: 'Test Assessor',
@@ -19,11 +19,15 @@ const makeSubmission = (scores: [number, number, number, number, number]): Submi
   score_client: scores[2],
   score_delivery: scores[3],
   score_risk: scores[4],
+  score_admin: scores[5],
+  score_leadership: scores[6],
   comment_competency: null,
   comment_knowledge: null,
   comment_client: null,
   comment_delivery: null,
   comment_risk: null,
+  comment_admin: null,
+  comment_leadership: null,
   submitted_at: '2026-04-14T00:00:00Z',
 })
 
@@ -46,23 +50,23 @@ describe('barColor', () => {
 })
 
 describe('submissionTotal', () => {
-  it('sums all 5 area scores', () => {
-    expect(submissionTotal(makeSubmission([8, 7, 6, 9, 5]))).toBe(35)
+  it('sums all 7 area scores', () => {
+    expect(submissionTotal(makeSubmission([8, 7, 6, 9, 5, 7, 6]))).toBe(48)
   })
-  it('returns 50 for max scores', () => {
-    expect(submissionTotal(makeSubmission([10, 10, 10, 10, 10]))).toBe(50)
+  it('returns 70 for max scores', () => {
+    expect(submissionTotal(makeSubmission([10, 10, 10, 10, 10, 10, 10]))).toBe(70)
   })
 })
 
 describe('toPercent', () => {
-  it('converts 40 out of 50 to 80%', () => expect(toPercent(40)).toBe(80))
-  it('converts 25 out of 50 to 50%', () => expect(toPercent(25)).toBe(50))
-  it('converts 50 out of 50 to 100%', () => expect(toPercent(50)).toBe(100))
+  it('converts 56 out of 70 to 80%', () => expect(toPercent(56)).toBe(80))
+  it('converts 35 out of 70 to 50%', () => expect(toPercent(35)).toBe(50))
+  it('converts 70 out of 70 to 100%', () => expect(toPercent(70)).toBe(100))
 })
 
 describe('areaAverage', () => {
   it('returns average of competency scores across two submissions', () => {
-    const subs = [makeSubmission([8, 7, 6, 9, 5]), makeSubmission([6, 7, 6, 7, 5])]
+    const subs = [makeSubmission([8, 7, 6, 9, 5, 6, 7]), makeSubmission([6, 7, 6, 7, 5, 6, 7])]
     expect(areaAverage(subs, 'competency')).toBe(7)
   })
   it('returns 0 for empty submissions array', () => {
@@ -72,9 +76,9 @@ describe('areaAverage', () => {
 
 describe('aggregateAverage', () => {
   it('averages submission totals', () => {
-    const subs = [makeSubmission([10, 10, 10, 10, 10]), makeSubmission([5, 5, 5, 5, 5])]
-    // totals: 50 + 25 = 75, avg = 37.5
-    expect(aggregateAverage(subs)).toBe(37.5)
+    const subs = [makeSubmission([10, 10, 10, 10, 10, 10, 10]), makeSubmission([5, 5, 5, 5, 5, 5, 5])]
+    // totals: 70 + 35 = 105, avg = 52.5
+    expect(aggregateAverage(subs)).toBe(52.5)
   })
   it('returns 0 for empty submissions array', () => {
     expect(aggregateAverage([])).toBe(0)

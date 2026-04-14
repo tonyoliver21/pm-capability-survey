@@ -35,7 +35,7 @@ export default function PMRankingTable({ pms, selectedPmId, onSelect }: Props) {
         <tbody>
           {pms.map((pm, i) => {
             const hasData = pm.submissions.length > 0
-            const label = getScoreLabel(hasData ? pm.avgTotal / 5 : 0)
+            const label = getScoreLabel(hasData ? pm.avgTotal / 7 : 0)
             const isSelected = selectedPmId === pm.id
 
             return (
@@ -52,7 +52,7 @@ export default function PMRankingTable({ pms, selectedPmId, onSelect }: Props) {
                   <td className="px-5 py-4 text-gray-500 text-xs">{pm.division}</td>
                   <td className="px-5 py-4 text-gray-500">{pm.submissions.length}</td>
                   <td className="px-5 py-4 text-gray-700">
-                    {hasData ? `${pm.avgTotal}/50` : '–'}
+                    {hasData ? `${pm.avgTotal}/70` : '–'}
                   </td>
                   <td className="px-5 py-4">
                     {hasData ? (

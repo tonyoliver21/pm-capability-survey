@@ -1,5 +1,5 @@
 export type Division = 'LLD' | 'LDB' | 'PPD' | 'ALL'
-export type AreaId = 'competency' | 'knowledge' | 'client' | 'delivery' | 'risk'
+export type AreaId = 'competency' | 'knowledge' | 'client' | 'delivery' | 'risk' | 'admin' | 'leadership'
 export type ScoreField = `score_${AreaId}`
 export type CommentField = `comment_${AreaId}`
 
@@ -26,11 +26,15 @@ export interface Submission {
   score_client: number
   score_delivery: number
   score_risk: number
+  score_admin: number
+  score_leadership: number
   comment_competency: string | null
   comment_knowledge: string | null
   comment_client: string | null
   comment_delivery: string | null
   comment_risk: string | null
+  comment_admin: string | null
+  comment_leadership: string | null
   submitted_at: string
 }
 
