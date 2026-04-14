@@ -1,4 +1,3 @@
-import React from 'react'
 import type { PMWithSubmissions } from '../../types'
 import { getScoreLabel } from '../../utils/scores'
 import PMDetail from './PMDetail'
@@ -13,7 +12,7 @@ export default function PMRankingTable({ pms, selectedPmId, onSelect }: Props) {
   if (pms.length === 0) {
     return (
       <p className="text-gray-400 text-sm text-center py-12">
-        No submissions yet.
+        No PMs in this division.
       </p>
     )
   }
@@ -35,13 +34,14 @@ export default function PMRankingTable({ pms, selectedPmId, onSelect }: Props) {
         </thead>
         <tbody>
           {pms.map((pm, i) => {
-            const label = getScoreLabel(pm.submissions.length > 0 ? pm.avgTotal / 5 : 0)
-            const isSelected = selectedPmId === pm.id
             const hasData = pm.submissions.length > 0
+            const label = getScoreLabel(hasData ? pm.avgTotal / 5 : 0)
+            const isSelected = selectedPmId === pm.id
 
             return (
-              <React.Fragment key={pm.id}>
+              <>
                 <tr
+                  key={pm.id}
                   className={`border-b border-gray-50 cursor-pointer transition-colors ${
                     isSelected ? 'bg-gray-50' : 'hover:bg-gray-50'
                   }`}
@@ -65,7 +65,7 @@ export default function PMRankingTable({ pms, selectedPmId, onSelect }: Props) {
                       '–'
                     )}
                   </td>
-                  <td className={`px-5 py-4 text-xs font-semibold ${label.textColor}`}>
+                  <td className={`px-5 py-4 text-xs font-semibold ${hasData ? label.textColor : 'text-gray-400'}`}>
                     {hasData ? label.label : '–'}
                   </td>
                   <td className="px-5 py-4 text-blue-400 text-xs font-medium">
@@ -73,13 +73,13 @@ export default function PMRankingTable({ pms, selectedPmId, onSelect }: Props) {
                   </td>
                 </tr>
                 {isSelected && (
-                  <tr>
+                  <tr key={`${pm.id}-detail`}>
                     <td colSpan={8} className="px-5 py-5 bg-gray-50 border-b border-gray-100">
                       <PMDetail pm={pm} />
                     </td>
                   </tr>
                 )}
-              </React.Fragment>
+              </>
             )
           })}
         </tbody>
