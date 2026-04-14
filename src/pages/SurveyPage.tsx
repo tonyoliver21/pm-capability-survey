@@ -70,20 +70,21 @@ export default function SurveyPage() {
 
   const activePms = pms.filter(p => !duplicates.has(p.id))
 
+  const scoredPms = activePms.filter(pm =>
+    AREA_IDS.every(a => (scores[pm.id]?.[`score_${a}`] ?? 0) > 0)
+  )
+
   const isValid =
     assessorName.trim().length > 0 &&
     division !== null &&
-    activePms.length > 0 &&
-    activePms.every(pm =>
-      AREA_IDS.every(a => (scores[pm.id]?.[`score_${a}`] ?? 0) > 0)
-    )
+    scoredPms.length > 0
 
   const handleSubmit = async () => {
     if (!isValid || submitting) return
     setSubmitting(true)
     setError(null)
 
-    const rows = activePms.map(pm => ({
+    const rows = scoredPms.map(pm => ({
       pm_id: pm.id,
       assessor_name: assessorName.trim(),
       score_competency: scores[pm.id]!.score_competency!,
@@ -124,7 +125,7 @@ export default function SurveyPage() {
     return (
       <ThankYou
         assessorName={assessorName}
-        pmCount={activePms.length}
+        pmCount={scoredPms.length}
         onReset={handleReset}
       />
     )
@@ -178,7 +179,7 @@ export default function SurveyPage() {
               disabled={!isValid || submitting}
               className="w-full bg-black text-white py-3.5 rounded-xl text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-900 transition-colors"
             >
-              {submitting ? 'Submitting…' : 'Submit all ratings'}
+              {submitting ? 'Submitting…' : `Submit ${scoredPms.length > 0 ? `${scoredPms.length} ` : ''}rating${scoredPms.length !== 1 ? 's' : ''}`}
             </button>
           </>
         )}
